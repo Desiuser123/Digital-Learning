@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Desi Digital Learning</title>
+  <style>
+    :root{
+      --bg: linear-gradient(180deg,#e8f7ff 0%, #dff3ff 100%);
+      --primary: #2b8cff;
+      --primary-2: #1967c2;
+      --card-bg: #fff;
+      --text: #072033;
+      --muted: #586776;
+      --shadow: 0 12px 30px rgba(35,78,133,0.08);
+      --accent: #f97352;
+      --glass: rgba(255,255,255,0.85);
+    }
+    .dark{
+      --bg: linear-gradient(180deg,#071022 0%, #081426 100%);
+      --primary: #4ea8ff;
+      --primary-2: #2b6fb3;
+      --card-bg: #071425;
+      --text: #e6f0ff;
+      --muted: #9fb6d1;
+      --shadow: 0 12px 30px rgba(0,0,0,0.6);
+      --glass: rgba(6,12,20,0.7);
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;font-family:Inter, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      min-height:100vh;
+    }
+
+    /* Header */
+    header{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:14px 22px;
+      gap:16px;
+      position:sticky;top:0;z-index:20;
+      backdrop-filter: blur(6px);
+      background: linear-gradient(90deg, rgba(255,255,255,0.55), rgba(255,255,255,0.15));
+      border-bottom:1px solid rgba(0,0,0,0.03);
+    }
+    .dark header{
+      background: linear-gradient(90deg, rgba(9,14,20,0.6), rgba(9,14,20,0.3));
+      border-bottom:1px solid rgba(255,255,255,0.03);
+    }
+
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo-mark{
+      width:46px;height:46px;border-radius:10px;
+      display:flex;align-items:center;justify-content:center;
+      color:white;font-weight:800;
+      background: linear-gradient(135deg,var(--primary),var(--primary-2));
+      box-shadow: var(--shadow);
+      font-size:18px;
+    }
+    .brand h1{margin:0;font-size:1.05rem}
+    .brand p{margin:0;font-size:.76rem;color:var(--muted)}
+
+    nav.main-nav{display:flex;gap:18px;align-items:center}
+    nav.main-nav a{color:var(--text);text-decoration:none;font-weight:700}
+    nav.main-nav a.small{font-weight:600;color:var(--muted)}
+    .nav-actions{display:flex;gap:10px;align-items:center}
+
+    .btn{padding:8px 12px;border-radius:12px;border:1px solid transparent;cursor:pointer;font-weight:700}
+    .btn.ghost{background:transparent;border:1px solid rgba(0,0,0,0.06)}
+    .btn.primary{background:linear-gradient(90deg,var(--primary),var(--primary-2));color:white;border:none}
+
+    /* layout */
+    .container{
+      max-width:1200px;margin:26px auto;padding:18px;
+      display:grid;grid-template-columns: 1fr 420px;gap:20px;align-items:start;
+    }
+
+    /* Info card */
+    .info-card{
+      background:var(--card-bg);padding:28px;border-radius:12px;box-shadow:var(--shadow);
+      display:flex;flex-direction:column;justify-content:space-between;min-height:420px;
+      color:var(--text);
+    }
+    .info-card h2{margin:0 0 8px 0;font-size:1.6rem}
+    .info-card p.lead{color:var(--muted);font-weight:700}
+    .features{list-style:none;padding:0;margin:16px 0 0 0}
+    .features li{margin:12px 0;color:var(--muted);font-weight:700;display:flex;gap:10px}
+    .features li::before{content:"✓";color:var(--primary)}
+
+    .register-cta{display:inline-block;padding:12px 16px;border-radius:10px;border:2px solid var(--primary);color:var(--primary);font-weight:800;background:transparent;cursor:pointer}
+
+    /* login card */
+    .auth-card{
+      background:var(--card-bg);padding:24px;border-radius:12px;box-shadow:var(--shadow);min-height:420px;
+    }
+    .role-tabs{display:flex;gap:8px;margin-bottom:10px}
+    .role-tab{flex:1;padding:10px;border-radius:8px;text-align:center;font-weight:800;cursor:pointer;border:1px solid rgba(0,0,0,0.04)}
+    .role-tab.active{background:linear-gradient(90deg,var(--primary),var(--primary-2));color:white;box-shadow:var(--shadow);border:none}
+
+    .form-row{margin:10px 0;display:flex;flex-direction:column;gap:8px}
+    input, select{padding:12px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);font-weight:700;background:transparent;color:var(--text)}
+    .link{color:var(--primary);cursor:pointer;font-weight:700}
+
+    /* Dashboard view */
+    .dashboard{display:none;max-width:1200px;margin:26px auto;padding:18px;gap:20px}
+    .dash-grid{display:grid;grid-template-columns:220px 1fr;gap:20px;align-items:start}
+    .sidebar{background:var(--card-bg);padding:18px;border-radius:12px;box-shadow:var(--shadow);min-height:360px}
+    .sidebar ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+    .sidebar li{padding:10px;border-radius:8px;cursor:pointer;font-weight:800;color:var(--muted)}
+    .sidebar li.active{background:linear-gradient(90deg,var(--primary),var(--primary-2));color:white}
+
+    .main-panel{background:var(--card-bg);padding:20px;border-radius:12px;box-shadow:var(--shadow);min-height:360px}
+
+    .greeting{font-size:1.25rem;font-weight:900;margin-bottom:8px}
+    .small-muted{color:var(--muted);font-weight:700}
+
+    /* settings modal */
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(6,10,16,0.45);z-index:50;padding:18px}
+    .modal.open{display:flex}
+    .modal-card{width:100%;max-width:580px;background:var(--card-bg);padding:18px;border-radius:12px;box-shadow:var(--shadow)}
+    .setting-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.04)}
+
+    /* shared banner */
+    .shared-banner{max-width:1200px;margin:16px auto;padding:12px;border-radius:10px;background:linear-gradient(90deg,#fff8eb,#fff1e6);color:#6a3b00;font-weight:800;box-shadow:var(--shadow)}
+
+    footer{max-width:1200px;margin:24px auto;padding:8px;color:var(--muted);font-weight:700;text-align:center}
+
+    /* responsive */
+    @media (max-width:980px){
+      .container{grid-template-columns:1fr;padding:14px}
+      header{padding:10px}
+      .dash-grid{grid-template-columns:1fr}
+      .sidebar{display:flex;overflow:auto;gap:8px;flex-direction:row}
+      .sidebar ul{flex-direction:row}
+    }
+    .box-background{
+            box-shadow: 0 0 30px rgb(156, 210, 89);
+    }
+    .reg{
+            box-shadow: 0 0 30px rgb(52, 5, 236);
+    }
+    .info-card{
+      box-shadow: 0 0 30px rgb(34, 236, 206);
+    }
+  </style>
+</head>
+<body>
+  <!-- Shared link banner (if opened via share link) -->
+  <div id="shared-banner" class="shared-banner" style="display:none"></div>
+
+  <header>
+    <div class="brand">
+      <div class="logo-mark" aria-hidden="true">
+  <img src="logo2.jpg"  height="75px" width="75px"  alt="DD" > </div>
+      <div>
+        <h1>Desi Digital Learning</h1>
+        <p class="small-muted" data-i18n="tagline">Grades 1 — 12 | Friendly • Local • Practical</p>
+      </div>
+    </div>
+
+    <nav class="main-nav" aria-label="top navigation">
+      <a href="#" data-i18n="navHome" id="nav-home">Home</a>
+      <a href="#" data-i18n="navProfile" id="nav-profile">Profile</a>
+      <a href="#" id="nav-dark" class="small" data-i18n="navDark">Dark Mode</a>
+      <a href="#" id="nav-share" class="small" data-i18n="navShare">Share</a>
+      <a href="#" id="nav-contact" class="small" data-i18n="navContact">Contact Us</a>
+      <a href="#" id="nav-settings" class="small" data-i18n="navSettings">Settings</a>
+    </nav>
+
+    <div class="nav-actions" id="nav-actions">
+      <!-- will be replaced with login buttons or greeting depending on state -->
+      <button class="btn ghost" id="btn-student-login">Student Login</button>
+      <button class="btn primary" id="btn-teacher-login">Teacher Login</button>
+    </div>
+  </header>
+
+  <!-- Main initial auth + info -->
+  <main class="reg">
+    <section class="container" id="auth-section">
+      <aside class="info-card" aria-labelledby="info-heading">
+        <div>
+          <h2 id="info-heading" data-i18n="welcomeTitle">New to Desi Digital Learning?</h2>
+          <p class="lead" data-i18n="welcomeLead">Desi Digital Learning aapke baccho ko class 1 se 12 tak structured, local aur accessible padhai deta hai.</p>
+
+          <ul class="features">
+            <li data-i18n="feat1">Easy-to-follow chapters aur practice exercises — bachon ke liye friendly layout</li>
+            <li data-i18n="feat2">Class-wise content (1–12) — board aur exam dono ke liye tayyar</li>
+            <li data-i18n="feat3">Progress tracking — parents aur teacher dono dekh sakte hain</li>
+            <li data-i18n="feat4">Short videos aur quick quizzes to boost learning retention</li>
+          </ul>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:18px">
+          <button class="register-cta" id="open-register" data-i18n="registerBtn">Register for Free</button>
+          <div style="text-align:right;color:var(--muted);font-weight:700">
+            <div data-i18n="contactLabel">Have questions?</div>
+            <div style="font-size:.95rem;" data-i18n="contactEmail">Contact: info@desidigital.com</div>
+          </div>
+        </div>
+      </aside>
+      <div class="box-background">
+      <aside class="auth-card" aria-labelledby="login-heading">
+        <h3 id="login-heading" data-i18n="loginTitle">Login</h3>
+
+        <div class="role-tabs" role="tablist">
+          <div class="role-tab active" data-role="student" id="tab-student" data-i18n="roleStudent">Student</div>
+          <div class="role-tab" data-role="teacher" id="tab-teacher" data-i18n="roleTeacher">Teacher</div>
+        </div>
+
+        <div id="login-area">
+          <div class="form-row">
+            <label for="login-email" style="font-weight:800" data-i18n="labelEmail">Email</label>
+            <input id="login-email" type="email" placeholder="you@example.com" />
+          </div>
+
+          <div class="form-row">
+            <label for="login-pass" style="font-weight:800" data-i18n="labelPassword">Password</label>
+            <input id="login-pass" type="password" placeholder="Enter Password" />
+            <div style="display:flex;justify-content:space-between;margin-top:6px">
+              <a class="link" id="forgot" data-i18n="forgot">Forgot Password?</a>
+              <a class="link" id="use-otp" data-i18n="useOtp">Use OTP to Login</a>
+            </div>
+          </div>
+        
+          <div style="display:flex;gap:10px;margin-top:12px">
+            <button class="btn primary" id="btn-login" data-i18n="btnLogin">Login</button>
+            <button class="btn" id="btn-demo" data-i18n="btnDemo">Demo</button>
+          </div>
+
+          <p style="margin-top:14px;color:var(--muted);font-weight:700" data-i18n="orSign">Or sign in with</p>
+          <div style="display:flex;gap:8px">
+            <button class="btn" id="google-login">Google</button>
+            <button class="btn" id="fb-login">Facebook</button>
+          </div>
+        </div>
+      </aside>
+      </div>
+    </section>
+
+    <!-- Dashboard (shows after login/registration) -->
+    <section id="dashboard" class="dashboard" aria-hidden="true">
+      <div class="dash-grid">
+        <aside class="sidebar" aria-label="sidebar">
+          <ul id="sidebar-list">
+            <li class="active" data-view="home" data-i18n="navHome">Home</li>
+            <li data-view="profile" data-i18n="navProfile">Profile</li>
+            <li data-view="schedule" data-i18n="navSchedule">Schedule</li>
+            <li data-view="purchase" data-i18n="navPurchase">Purchase</li>
+            <li data-view="settings" id="open-settings" data-i18n="navSettings">Settings</li>
+            <li data-view="share" id="sidebar-share" data-i18n="navShare">Share</li>
+            <li id="sidebar-dark" data-i18n="navDark">Dark Mode</li>
+            <li id="sidebar-logout" data-i18n="navLogout">Logout</li>
+          </ul>
+        </aside>
+
+        <main class="main-panel" id="main-panel">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div>
+              <div class="greeting" id="greeting">Hello, Guest</div>
+              <div class="small-muted" id="greeting-sub">Welcome to your dashboard</div>
+            </div>
+            <div style="text-align:right">
+              <div class="small-muted" id="user-email">—</div>
+              <div style="margin-top:6px">
+                <button class="btn" id="btn-profile-edit">Edit Profile</button>
+                <button class="btn primary" id="btn-share-link">Share Link</button>
+              </div>
+            </div>
+          </div>
+
+          <hr style="margin:18px 0;border:none;border-top:1px solid rgba(0,0,0,0.06)">
+
+          <div id="dash-content">
+            <!-- default home content -->
+            <h2 data-i18n="dashWelcome">Welcome to Desi Digital Learning</h2>
+            <p class="small-muted" data-i18n="dashIntro">Yahan se aap apne courses, schedule, progress aur settings manage kar sakte hain.</p>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:16px">
+              <div style="background:var(--card-bg);padding:16px;border-radius:10px;box-shadow:var(--shadow)">
+                <h4 data-i18n="card1">Your Progress</h4>
+                <p class="small-muted" data-i18n="card1desc">Track lessons completed and quizzes.</p>
+              </div>
+              <div style="background:var(--card-bg);padding:16px;border-radius:10px;box-shadow:var(--shadow)">
+                <h4 data-i18n="card2">Upcoming Schedule</h4>
+                <p class="small-muted" data-i18n="card2desc">Next class: Mathematics — 4:00 PM</p>
+              </div>
+              <div style="background:var(--card-bg);padding:16px;border-radius:10px;box-shadow:var(--shadow)">
+                <h4 data-i18n="card3">Quick Links</h4>
+                <p class="small-muted" data-i18n="card3desc">Access study material and tests quickly.</p>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </section>
+  </main>
+
+  <footer>&copy; 2025 Desi Digital Learning · info@desidigital.com</footer>
+
+  <!-- Registration modal -->
+  <div class="modal" id="reg-modal" aria-hidden="true">
+    <div class="modal-card">
+      <h3 data-i18n="regTitle">Student Registration</h3>
+      <p class="small-muted" data-i18n="regSub">Please fill basic details (Class 1 — 12)</p>
+
+      <form id="reg-form" novalidate>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px">
+          <div style="grid-column:1 / -1">
+            <label for="r-name" style="font-weight:800" data-i18n="labelName">Full Name</label>
+            <input id="r-name" type="text" required placeholder="Your full name" />
+          </div>
+          <div>
+            <label for="r-city" style="font-weight:800" data-i18n="labelCity">City</label>
+            <input id="r-city" type="text" required placeholder="City" />
+          </div>
+          <div>
+            <label for="r-class" style="font-weight:800" data-i18n="labelClass">Class</label>
+            <select id="r-class" required></select>
+          </div>
+          <div>
+            <label for="r-email" style="font-weight:800" data-i18n="labelEmail">Email</label>
+            <input id="r-email" type="email" required placeholder="you@example.com" />
+          </div>
+          <!-- mera changing -->
+           <div>
+            <label for="r-password" style="font-weight:800" data-i18n="labelPassword">Password</label>
+            <input id="r-password" type="password" required placeholder="enter password" />
+          </div>
+          <div>
+            <label for="r-phone" style="font-weight:800" data-i18n="labelPhone">Mobile (10 digits)</label>
+            <input id="r-phone" type="tel" maxlength="10" required placeholder="1234567890" />
+          </div>
+
+          <div style="grid-column:1 / -1;display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
+            <button type="button" class="btn" id="reg-cancel" data-i18n="cancel">Cancel</button>
+            <button type="submit" class="btn primary" id="reg-submit" data-i18n="submit">Submit</button>
+          </div>
+        </div>
+        <div id="reg-error" style="color:#c62828;font-weight:800;margin-top:8px;display:none"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Settings modal -->
+  <div class="modal" id="settings-modal" aria-hidden="true">
+    <div class="modal-card">
+      <h3 data-i18n="settingsTitle">Settings</h3>
+
+      <div style="margin-top:12px">
+        <div class="setting-row">
+          <div style="font-weight:800" data-i18n="darkMode">Dark Mode</div>
+          <div>
+            <input type="checkbox" id="toggle-dark" /> <label for="toggle-dark" id="toggle-label"></label>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <div style="font-weight:800" data-i18n="language">Language</div>
+          <div>
+            <select id="lang-select" style="padding:8px;border-radius:8px">
+              <option value="en">English (Default)</option>
+              <option value="hi">हिन्दी</option>
+              <option value="pa">ਪੰਜਾਬੀ</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="text-align:right;margin-top:10px">
+          <button class="btn" id="settings-close" data-i18n="close">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* -------------------------
+   Translations
+   ------------------------- */
+const i18n = {
+  en: {
+    tagline: "Grades 1 — 12 | Friendly • Local • Practical",
+    navHome: "Home",
+    navProfile: "Profile",
+    navDark: "Dark Mode",
+    navShare: "Share",
+    navContact: "Contact Us",
+    navSettings: "Settings",
+    welcomeTitle: "New to Desi Digital Learning?",
+    welcomeLead: "Desi Digital Learning provides structured, local and accessible learning for classes 1–12.",
+    feat1: "Easy-to-follow chapters and practice exercises — student friendly",
+    feat2: "Class-wise content (1–12) — ready for boards & exams",
+    feat3: "Progress tracking for parents and teachers",
+    feat4: "Short videos and quick quizzes to boost retention",
+    registerBtn: "Register for Free",
+    contactLabel: "Have questions?",
+    contactEmail: "Contact: info@desidigital.com",
+    loginTitle: "Login",
+    roleStudent: "Student",
+    roleTeacher: "Teacher",
+    labelEmail: "Email",
+    labelPassword: "Password",
+    forgot: "Forgot Password?",
+    useOtp: "Use OTP to Login",
+    btnLogin: "Login",
+    btnDemo: "Demo",
+    orSign: "Or sign in with",
+    regTitle: "Student Registration",
+    regSub: "Please fill basic details (Class 1 — 12)",
+    labelName: "Full Name",
+    labelCity: "City",
+    labelClass: "Class",
+    labelPhone: "Mobile (10 digits)",
+    cancel: "Cancel",
+    submit: "Submit",
+    settingsTitle: "Settings",
+    darkMode: "Dark Mode",
+    language: "Language",
+    close: "Close",
+    navSchedule: "Schedule",
+    navPurchase: "Purchase",
+    navLogout: "Logout",
+    dashWelcome: "Welcome to Desi Digital Learning",
+    dashIntro: "Manage your courses, schedule, progress and settings from here.",
+    card1: "Your Progress",
+    card1desc: "Track lessons completed and quizzes.",
+    card2: "Upcoming Schedule",
+    card2desc: "Next class: Mathematics — 4:00 PM",
+    card3: "Quick Links",
+    card3desc: "Access study material and tests quickly.",
+    invalidCreds: "Invalid userid/password"
+  },
+  hi: {
+    tagline: "कक्षा 1 — 12 | आसान • लोकल • प्रयोगात्मक",
+    navHome: "होम",
+    navProfile: "प्रोफ़ाइल",
+    navDark: "डार्क मोड",
+    navShare: "शेयर",
+    navContact: "संपर्क करें",
+    navSettings: "सेटिंग",
+    welcomeTitle: "Desi Digital Learning में आपका स्वागत है!",
+    welcomeLead: "Desi Digital Learning आपके बच्चों को कक्षा 1 से 12 तक संरचित और पहुंचयोग्य पढाई देता है।",
+    feat1: "सरल अध्याय और अभ्यास — बच्चों के लिए अनुकूल",
+    feat2: "क्लास-वार कंटेंट (1–12) — बोर्ड और परीक्षा हेतु तैयार",
+    feat3: "प्रगति ट्रैकिंग — माता-पिता और शिक्षक दोनों देख सकते हैं",
+    feat4: "छोटे वीडियो और क्विज़ से सीखने में सहायता",
+    registerBtn: "मुफ्त रजिस्टर करें",
+    contactLabel: "कोई सवाल?",
+    contactEmail: "संपर्क: info@desidigital.com",
+    loginTitle: "लॉगिन",
+    roleStudent: "स्टूडेंट",
+    roleTeacher: "टीचर",
+    labelEmail: "ईमेल",
+    labelPassword: "पासवर्ड",
+    forgot: "पासवर्ड भूल गए?",
+    useOtp: "OTP से लॉगिन",
+    btnLogin: "लॉगिन",
+    btnDemo: "डेमो",
+    orSign: "या साइन इन करें",
+    regTitle: "स्टूडेंट रजिस्ट्रेशन",
+    regSub: "कृपया बेसिक जानकारी भरें (कक्षा 1—12)",
+    labelName: "पूरा नाम",
+    labelCity: "शहर",
+    labelClass: "कक्षा",
+    labelPhone: "मोबाइल (10 अंक)",
+    cancel: "रद्द करें",
+    submit: "सबमिट",
+    settingsTitle: "सेटिंग",
+    darkMode: "डार्क मोड",
+    language: "भाषा",
+    close: "बंद करें",
+    navSchedule: "अनुसूची",
+    navPurchase: "खरीद",
+    navLogout: "लॉगआउट",
+    dashWelcome: "Desi Digital Learning में आपका स्वागत है",
+    dashIntro: "यहाँ से आप कोर्स, अनुसूची, प्रगति और सेटिंग्स प्रबंधित कर सकते हैं।",
+    card1: "आपकी प्रगति",
+    card1desc: "कितनी कक्षाएँ और क्विज़ पूरे हुए, देखें।",
+    card2: "आगामी अनुसूची",
+    card2desc: "अगली कक्षा: गणित — शाम 4:00",
+    card3: "त्वरित लिंक",
+    card3desc: "स्टडी मटेरियल और टेस्ट जल्दी एक्सेस करें।",
+    invalidCreds: "अमान्य userid/password"
+  },
+  pa: {
+    tagline: "ਕਲਾਸ 1 — 12 | ਆਸਾਨ • ਲੋਕਲ • ਵਰਤੋਂਯੋਗ",
+    navHome: "ਘਰ",
+    navProfile: "ਪ੍ਰੋਫਾਈਲ",
+    navDark: "ਡਾਰਕ ਮੋਡ",
+    navShare: "ਸ਼ੇਅਰ",
+    navContact: "ਸੰਪਰਕ",
+    navSettings: "ਸੈਟਿੰਗ",
+    welcomeTitle: "Desi Digital Learning ਵਿੱਚ ਤੁਹਾਡਾ ਸੁਆਗਤ ਹੈ!",
+    welcomeLead: "Desi Digital Learning ਤੁਹਾਡੇ ਬੱਚਿਆਂ ਨੂੰ ਕਲਾਸ 1 ਤੋਂ 12 ਤੱਕ ਸੰਗਠਿਤ ਅਤੇ ਪਹੁੰਚਨਯੋਗ ਪੜ੍ਹਾਈ ਦਿੰਦਾ ਹੈ।",
+    feat1: "ਸੌਖੇ ਧਿਆਨ ਵਾਲੇ ਅਧਿਆਇ ਅਤੇ ਅਭਿਆਸ — ਬੱਚਿਆਂ ਲਈ ਢਾਲੂ",
+    feat2: "ਕਲਾਸ-ਵਾਇਸ ਸਮੱਗਰੀ (1–12) — ਬੋਰਡ ਅਤੇ ਇਮਤਿਹਾਨ ਲਈ ਤਿਆਰ",
+    feat3: "ਪ੍ਰਗਤੀ ਟ੍ਰੈਕਿੰਗ — ਮਾਪੇ ਅਤੇ ਅਧਿਆਪਕ ਵੇਖ ਸਕਦੇ ਹਨ",
+    feat4: "ਛੋਟੇ ਵੀਡੀਓ ਅਤੇ ਤੇਜ਼ ਕਵਿਜ਼ ਨਾਲ ਯਾਦਦਾਸ਼ਤ ਵਧੇਗੀ",
+    registerBtn: "ਮੁਫਤ ਰਜਿਸਟਰ ਕਰੋ",
+    contactLabel: "ਸਵਾਲ ਹਨ?",
+    contactEmail: "ਸੰਪਰਕ: info@desidigital.com",
+    loginTitle: "ਲਾਗਇਨ",
+    roleStudent: "ਸਟੂਡੈਂਟ",
+    roleTeacher: "ਅਧਿਆਪਕ",
+    labelEmail: "ਈਮੇਲ",
+    labelPassword: "ਪਾਸਵਰਡ",
+    forgot: "ਪਾਸਵਰਡ ਭੁੱਲ ਗਏ?",
+    useOtp: "OTP ਨਾਲ ਲਾਗਇਨ ਕਰੋ",
+    btnLogin: "ਲਾਗਇਨ",
+    btnDemo: "ਡੈਮੋ",
+    orSign: "ਜਾਂ ਸਾਈਨ ਇਨ ਕਰੋ",
+    regTitle: "ਸਟੂਡੈਂਟ ਰਜਿਸਟ੍ਰੇਸ਼ਨ",
+    regSub: "ਮਿਹਰਬਾਨੀ ਕਰਕੇ ਬੁਨਿਆਦੀ ਵੇਰਵੇ ਭਰੋ (ਕਲਾਸ 1—12)",
+    labelName: "ਪੂਰਾ ਨਾਮ",
+    labelCity: "ਸ਼ਹਿਰ",
+    labelClass: "ਕਲਾਸ",
+    labelPhone: "ਮੋਬਾਈਲ (10 ਅੰਕ)",
+    cancel: "ਰੱਦ ਕਰੋ",
+    submit: "ਜਮ੍ਹਾਂ ਕਰੋ",
+    settingsTitle: "ਸੈਟਿੰਗ",
+    darkMode: "ਡਾਰਕ ਮੋਡ",
+    language: "ਭਾਸ਼ਾ",
+    close: "ਬੰਦ",
+    navSchedule: "ਸ਼ਡਿਊਲ",
+    navPurchase: "ਖਰੀਦ",
+    navLogout: "ਲਾਗਆਊਟ",
+    dashWelcome: "Desi Digital Learning ਵਿੱਚ ਤੁਹਾਡਾ ਸੁਆਗਤ ਹੈ",
+    dashIntro: "ਇੱਥੇ ਤੁਸੀਂ ਕੋਰਸ, ਸ਼ਡਿਊਲ, ਪ੍ਰਗਤੀ ਅਤੇ ਸੈਟਿੰਗ ਪ੍ਰਬੰਧ ਕਰ ਸਕਦੇ ਹੋ।",
+    card1: "ਤੁਹਾਡੀ ਪ੍ਰਗਤੀ",
+    card1desc: "ਹੋਏ ਸਬਕ ਅਤੇ ਕਵਿਜ਼ ਟریک ਕਰੋ।",
+    card2: "ਆਉਣ ਵਾਲਾ ਸ਼ਡਿਊਲ",
+    card2desc: "ਅਗਲਾ ਗੈਣ: ਗਣਿਤ — 4:00 ਵਜੇ",
+    card3: "ਤੁਰੰਤ ਲਿੰਕ",
+    card3desc: "ਪੜ੍ਹਾਈ ਸਮੱਗਰੀ ਅਤੇ ਟੈਸਟ ਤੁਰੰਤ ਪਾਵੋ।",
+    invalidCreds: "ਅਮਾਨਤਾ userid/password"
+  }
+};
+
+function applyTranslations(lang){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.getAttribute('data-i18n');
+    if(i18n[lang] && i18n[lang][key]) el.innerText = i18n[lang][key];
+  });
+  // placeholders that are not direct text
+  document.getElementById('r-name').placeholder = (lang==='en') ? 'Your full name' : (lang==='hi') ? 'आपका पूरा नाम' : 'ਤੁਹਾਡਾ ਪੂਰਾ ਨਾਮ';
+  document.getElementById('r-city').placeholder = (lang==='en') ? 'City' : (lang==='hi') ? 'शहर' : 'ਸ਼ਹਿਰ';
+  document.getElementById('r-email').placeholder = (lang==='en') ? 'you@example.com' : (lang==='hi') ? 'आपका ईमेल' : 'ਤੁਹਾਡਾ ਈਮੇਲ';
+  document.getElementById('login-email').placeholder = (lang==='en') ? 'you@example.com' : (lang==='hi') ? 'आपका ईमेल' : 'ਤੁਹਾਡਾ ਈਮੇਲ';
+}
+
+/* -------------------------
+   Utility / state
+   ------------------------- */
+const LS_USERS = 'ddl_users';
+const LS_CURRENT = 'ddl_current';
+const LS_THEME = 'ddl_theme';
+const LS_LANG = 'ddl_lang';
+
+function saveUsers(users){ localStorage.setItem(LS_USERS, JSON.stringify(users || [])); }
+function loadUsers(){ return JSON.parse(localStorage.getItem(LS_USERS) || '[]'); }
+function setCurrentUser(email){ localStorage.setItem(LS_CURRENT, email); }
+function getCurrentUser(){ return localStorage.getItem(LS_CURRENT); }
+function clearCurrentUser(){ localStorage.removeItem(LS_CURRENT); }
+
+function getUserByEmail(email){
+  const users = loadUsers();
+  return users.find(u=>u.email.toLowerCase()===email.toLowerCase());
+}
+
+/* -------------------------
+   Populate class options
+   ------------------------- */
+const classSelect = document.getElementById('r-class');
+for(let i=1;i<=12;i++){
+  const o = document.createElement('option');
+  o.value = i; o.textContent = 'Class ' + i;
+  classSelect.appendChild(o);
+}
+
+/* -------------------------
+   Registration modal logic
+   ------------------------- */
+const regModal = document.getElementById('reg-modal');
+document.getElementById('open-register').addEventListener('click', ()=> {
+  regModal.classList.add('open'); regModal.style.display='flex';
+  document.getElementById('r-name').focus();
+});
+document.getElementById('reg-cancel').addEventListener('click', closeReg);
+function closeReg(){ regModal.classList.remove('open'); regModal.style.display='none'; document.getElementById('reg-form').reset(); document.getElementById('reg-error').style.display='none'; }
+
+document.getElementById('reg-form').addEventListener('submit', (e)=> {
+  e.preventDefault();
+  const name = document.getElementById('r-name').value.trim();
+  const city = document.getElementById('r-city').value.trim();
+  const rclass = document.getElementById('r-class').value;
+  const email = document.getElementById('r-email').value.trim();
+  const phone = document.getElementById('r-phone').value.trim();
+  const password = document.getElementById('r-password').value.trim();
+  const errEl = document.getElementById('reg-error');
+
+  if(!name||!city||!rclass||!email||!phone||!password){
+    errEl.innerText = currentI18n('regFillAll') || 'Sabhi fields bharna zaroori hai.'; errEl.style.display='block'; return;
+  }
+  if(!/^[0-9]{10}$/.test(phone)){ errEl.innerText = currentI18n('regPhoneErr') || 'Mobile number exactly 10 digits ka hona chahiye.'; errEl.style.display='block'; return;}
+  if(!/^\S+@\S+\.\S+$/.test(email)){ errEl.innerText = currentI18n('regEmailErr') || 'Valid email dalen.'; errEl.style.display='block'; return; }
+
+  // store
+  const users = loadUsers();
+  // if same email exists, replace
+  const existsIndex = users.findIndex(u=>u.email.toLowerCase()===email.toLowerCase());
+  const userObj = {name, city, class: rclass, email, phone, password, role:'student', created:new Date().toISOString()};
+  if(existsIndex>-1) users[existsIndex]=userObj; else users.push(userObj);
+  saveUsers(users);
+
+  // set current user and open dashboard
+  setCurrentUser(email);
+  closeReg();
+  showDashboardFor(userObj);
+});
+
+/* -------------------------
+   Login logic
+   ------------------------- */
+let activeRole = 'student';
+document.querySelectorAll('.role-tab').forEach(tab=>{
+  tab.addEventListener('click', ()=> {
+    document.querySelectorAll('.role-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    activeRole = tab.dataset.role;
+  });
+});
+
+document.getElementById('btn-login').addEventListener('click', ()=>{
+  const email = document.getElementById('login-email').value.trim();
+  const pass = document.getElementById('login-pass').value.trim();
+
+  if(!email||!pass){ alert(currentI18n('loginFill')||'Email aur password dono bharein.'); return; }
+  if(activeRole === 'student'){
+    const user = getUserByEmail(email);
+    if(user){
+      // require stored password to match
+      if(user.password && user.password === pass){
+        setCurrentUser(email);
+        showDashboardFor(user);
+      } else {
+        alert(currentI18n('invalidCreds') || 'Invalid userid/password');
+      }
+    } else {
+      if(confirm(currentI18n('notFoundRegister')||'Student not found. Register now?')){
+        document.getElementById('open-register').click();
+        document.getElementById('r-email').value = email;
+      }
+    }
+  } else {
+    // teacher demo: accept any email with password 'teacher123'
+    if(pass === 'teacher123'){
+      // create teacher object if not exists
+      let users = loadUsers();
+      let teacher = users.find(u=>u.email.toLowerCase()===email.toLowerCase() && u.role==='teacher');
+      if(!teacher){
+        teacher = {name:'Teacher', email, city:'', class:'', phone:'', role:'teacher', created: new Date().toISOString()};
+        users.push(teacher); saveUsers(users);
+      }
+      setCurrentUser(email);
+      showDashboardFor(teacher);
+    } else {
+      alert(currentI18n('teacherDemo')||'Invalid teacher demo credentials. Use password teacher123');
+    }
+  }
+});
+
+/* -------------------------
+   Show Dashboard
+   ------------------------- */
+function showDashboardFor(user){
+  // hide auth section
+  document.getElementById('auth-section').style.display='none';
+  document.getElementById('dashboard').style.display='block';
+  document.getElementById('dashboard').setAttribute('aria-hidden','false');
+
+  // update header actions
+  const navActions = document.getElementById('nav-actions');
+  navActions.innerHTML = `
+    <button class="btn" id="hdr-menu" aria-label="Menu">☰</button>
+    <div style="text-align:right">
+      <div style="font-weight:800" id="hdr-hello">${currentI18n('greeting')||'Hello'}, ${user.name}</div>
+      <div style="font-size:.85rem;color:var(--muted)">${user.email}</div>
+    </div>
+    <button class="btn" id="hdr-logout">${currentI18n('navLogout')||'Logout'}</button>
+  `;
+  document.getElementById('hdr-logout').addEventListener('click', ()=> {
+    logout();
+  });
+
+  // hide the top navigation when dashboard is open
+  const navMain = document.querySelector('nav.main-nav');
+  if(navMain) navMain.style.display = 'none';
+
+  // fill dashboard info
+  document.getElementById('greeting').innerText = (currentI18n('greeting')||'Hello') + ', ' + user.name;
+  document.getElementById('greeting-sub').innerText = currentI18n('dashIntro');
+  document.getElementById('user-email').innerText = user.email;
+
+  // update share button action
+  document.getElementById('btn-share-link').onclick = ()=> generateShareLink(user);
+
+  // sidebar behavior: collapse on small screens, provide a hamburger toggle
+  const sidebar = document.querySelector('.sidebar');
+  if(window.innerWidth < 980){
+    if(sidebar) sidebar.style.display = 'none';
+  } else {
+    if(sidebar) sidebar.style.display = 'block';
+  }
+
+  const hdrMenu = document.getElementById('hdr-menu');
+  if(hdrMenu){
+    hdrMenu.addEventListener('click', ()=>{
+      if(!sidebar) return;
+      sidebar.style.display = (sidebar.style.display === 'none') ? 'block' : 'none';
+    });
+  }
+
+  // sidebar actions
+  document.querySelectorAll('#sidebar-list li').forEach(li=>{
+    li.classList.remove('active');
+    if(li.dataset.view==='home') li.classList.add('active');
+    li.onclick = ()=> {
+      document.querySelectorAll('#sidebar-list li').forEach(x=>x.classList.remove('active'));
+      li.classList.add('active');
+      openView(li.dataset.view, user);
+      // on small screens, hide sidebar after selection for cleaner UX
+      if(window.innerWidth < 980 && sidebar) sidebar.style.display = 'none';
+    };
+  });
+
+  // Setup additional sidebar controls
+  document.getElementById('sidebar-dark').onclick = toggleDark;
+  document.getElementById('sidebar-share').onclick = ()=> generateShareLink(user);
+  document.getElementById('sidebar-logout').onclick = logout;
+  document.getElementById('open-settings').onclick = openSettings;
+}
+
+/* -------------------------
+   Views
+   ------------------------- */
+function openView(name, user){
+  const content = document.getElementById('dash-content');
+  if(name==='home'){
+    content.innerHTML = `
+      <h2>${currentI18n('dashWelcome')}</h2>
+      <p class="small-muted">${currentI18n('dashIntro')}</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:16px">
+        <div style="background:var(--card-bg);padding:16px;border-radius:10px;box-shadow:var(--shadow)">
+          <h4>${currentI18n('card1')}</h4>
+          <p class="small-muted">${currentI18n('card1desc')}</p>
+        </div>
+        <div style="background:var(--card-bg);padding:16px;border-radius:10px;box-shadow:var(--shadow)">
+          <h4>${currentI18n('card2')}</h4>
+          <p class="small-muted">${currentI18n('card2desc')}</p>
+        </div>
+        <div style="background:var(--card-bg);padding:16px;border-radius:10px;box-shadow:var(--shadow)">
+          <h4>${currentI18n('card3')}</h4>
+          <p class="small-muted">${currentI18n('card3desc')}</p>
+        </div>
+      </div>
+    `;
+  } else if(name==='profile'){
+    const u = user || getUserByEmail(getCurrentUser());
+    content.innerHTML = `
+      <h2>${currentI18n('navProfile')}</h2>
+      <div style="display:flex;gap:14px;align-items:center;margin-top:12px">
+        <div style="width:96px;height:96px;border-radius:12px;background:linear-gradient(90deg,var(--primary),var(--primary-2));display:flex;align-items:center;justify-content:center;color:white;font-weight:900">${(u && u.name)?u.name.split(' ').map(x=>x[0]).slice(0,2).join(''):'U'}</div>
+        <div>
+          <div style="font-weight:900;font-size:1.15rem">${u ? u.name : ''}</div>
+          <div class="small-muted">${u ? u.email : ''}</div>
+          <div style="margin-top:8px" class="small-muted">Class: ${u ? u.class : '-' } | City: ${u ? u.city : '-'}</div>
+        </div>
+      </div>
+    `;
+  } else if(name==='schedule'){
+    content.innerHTML = `<h2>${currentI18n('navSchedule')}</h2><p class="small-muted">Schedule demo content.</p>`;
+  } else if(name==='purchase'){
+    content.innerHTML = `<h2>${currentI18n('navPurchase')}</h2><p class="small-muted">Purchase demo content.</p>`;
+  } else if(name==='settings'){
+    openSettings();
+  } else if(name==='share'){
+    const u = user || getUserByEmail(getCurrentUser());
+    content.innerHTML = `<h2>${currentI18n('navShare')}</h2><p class="small-muted">Share your profile with friends.</p>
+    <div style="margin-top:12px"><button class="btn primary" onclick="generateShareLink(${JSON.stringify(u)})">Generate Link</button></div>`;
+  }
+}
+
+/* -------------------------
+   Sharing (generate link)
+   ------------------------- */
+function generateShareLink(user){
+  if(!user){ alert(currentI18n('shareLogin')||'Login first to generate share link.'); return; }
+  // We'll create a short share token using base64 of email
+  const token = btoa(encodeURIComponent(user.email));
+  const url = location.origin + location.pathname + '?sharedBy=' + token;
+  // copy to clipboard
+  navigator.clipboard?.writeText(url).then(()=> {
+    alert(currentI18n('shareCopied') || 'Share link copied to clipboard!');
+  }).catch(()=> {
+    prompt('Copy this link:', url);
+  });
+
+  // try web share
+  if(navigator.share){
+    try{
+      navigator.share({title: 'Desi Digital Learning', text: `${user.name} shared their profile`, url}).catch(()=>{});
+    }catch(e){}
+  }
+}
+
+/* -------------------------
+   Handle incoming shared link on page load
+   ------------------------- */
+function handleIncomingShared(){
+  const params = new URLSearchParams(location.search);
+  const shared = params.get('sharedBy');
+  if(shared){
+    let nameDisplay = shared;
+    try{
+      const decodedEmail = decodeURIComponent(atob(shared));
+      const user = getUserByEmail(decodedEmail);
+      if(user) nameDisplay = user.name;
+      else nameDisplay = decodedEmail;
+    }catch(e){
+      try{ nameDisplay = decodeURIComponent(shared); }catch(_){}
+    }
+    const banner = document.getElementById('shared-banner');
+    banner.innerText = `This page was shared by ${nameDisplay}`;
+    banner.style.display='block';
+  }
+}
+
+/* -------------------------
+   Settings modal
+   ------------------------- */
+const settingsModal = document.getElementById('settings-modal');
+function openSettings(){
+  settingsModal.classList.add('open'); settingsModal.style.display='flex';
+  const theme = localStorage.getItem(LS_THEME) || 'light';
+  document.getElementById('toggle-dark').checked = (theme === 'dark');
+  document.getElementById('lang-select').value = localStorage.getItem(LS_LANG) || 'en';
+}
+
+document.getElementById('settings-close').addEventListener('click', () => {
+  settingsModal.classList.remove('open'); settingsModal.style.display='none';
+});
+document.getElementById('nav-settings').addEventListener('click',(e)=>{ e.preventDefault(); openSettings(); });
+
+document.getElementById('toggle-dark').addEventListener('change', (e)=>{
+  if(e.target.checked){ document.documentElement.classList.add('dark'); localStorage.setItem(LS_THEME,'dark'); } 
+  else { document.documentElement.classList.remove('dark'); localStorage.setItem(LS_THEME,'light'); }
+});
+
+document.getElementById('lang-select').addEventListener('change', (e)=>{
+  localStorage.setItem(LS_LANG, e.target.value);
+  applyTranslations(e.target.value);
+});
+
+/* -------------------------
+   Dark toggle in header / sidebar
+   ------------------------- */
+document.getElementById('nav-dark').addEventListener('click',(e)=>{ e.preventDefault(); toggleDark(); });
+function toggleDark(){
+  const isDark = document.documentElement.classList.toggle('dark');
+  localStorage.setItem(LS_THEME, isDark ? 'dark' : 'light');
+}
+
+/* -------------------------
+   Share from header
+   ------------------------- */
+document.getElementById('nav-share').addEventListener('click', async (e)=> {
+  e.preventDefault();
+  const currentEmail = getCurrentUser();
+  if(!currentEmail){ // fallback: copy homepage
+    const url = location.origin + location.pathname;
+    try{ await navigator.clipboard.writeText(url); alert('Site link copied!'); } catch { prompt('Copy link', url); }
+    return;
+  }
+  const user = getUserByEmail(currentEmail);
+  generateShareLink(user);
+});
+
+/* -------------------------
+   Logout
+   ------------------------- */
+function logout(){
+  clearCurrentUser();
+  // return to auth view
+  document.getElementById('auth-section').style.display='grid';
+  document.getElementById('dashboard').style.display='none';
+  document.getElementById('nav-actions').innerHTML = `<button class="btn ghost" id="btn-student-login">Student Login</button>
+    <button class="btn primary" id="btn-teacher-login">Teacher Login</button>`;
+  attachHeaderLoginHandlers();
+  // restore top nav
+  const navMain = document.querySelector('nav.main-nav');
+  if(navMain) navMain.style.display = 'flex';
+  // clear greeting
+  document.getElementById('greeting').innerText = 'Hello, Guest';
+}
+
+/* -------------------------
+   Helper: current i18n fallback for missing keys
+   ------------------------- */
+function currentI18n(key){
+  const lang = localStorage.getItem(LS_LANG) || 'en';
+  return (i18n[lang] && i18n[lang][key]) ? i18n[lang][key] : null;
+}
+
+/* -------------------------
+   Header login handlers (recreate after logout)
+   ------------------------- */
+function attachHeaderLoginHandlers(){
+  const sBtn = document.getElementById('btn-student-login');
+  const tBtn = document.getElementById('btn-teacher-login');
+  if(sBtn) sBtn.addEventListener('click', ()=> { setActiveRoleAndScroll('student'); });
+  if(tBtn) tBtn.addEventListener('click', ()=> { setActiveRoleAndScroll('teacher'); });
+}
+function setActiveRoleAndScroll(role){
+  activeRole=role;
+  document.querySelectorAll('.role-tab').forEach(t=> t.classList.toggle('active', t.dataset.role===role));
+  window.scrollTo({top:0, behavior:'smooth'});
+  document.getElementById('login-email').focus();
+}
+
+/* -------------------------
+   Demo & misc
+   ------------------------- */
+document.getElementById('btn-demo').addEventListener('click', ()=>{
+  const users = loadUsers();
+  if(!users.length){ alert('No registered users (demo). Please register.'); return; }
+  alert('Registered users:\n\\n' + users.map((u,i)=> (i+1)+'. '+u.name+' — Class '+u.class+' — '+u.email).join('\n'));
+});
+document.getElementById('forgot').addEventListener('click', ()=> {
+  const email = prompt('Enter your registered email:');
+  if(email) alert('If this email exists, a reset link (demo) will be sent to ' + email);
+});
+
+/* -------------------------
+   On load: apply saved theme & language & shared link handling
+   ------------------------- */
+(function init(){
+  // theme
+  const theme = localStorage.getItem(LS_THEME) || 'light';
+  if(theme === 'dark') document.documentElement.classList.add('dark');
+
+  // language
+  const lang = localStorage.getItem(LS_LANG) || 'en';
+  applyTranslations(lang);
+  // small additional label for greeting key
+  i18n.en.greeting = 'Hello';
+  i18n.hi.greeting = 'नमस्ते';
+  i18n.pa.greeting = 'ਸਤ ਸ੍ਰੀ ਅਕਾਲ';
+
+  // header login handlers attach
+  attachHeaderLoginHandlers();
+
+  // handle incoming shared link
+  handleIncomingShared();
+
+  // if current user exists, auto open dashboard
+  const cur = getCurrentUser();
+  if(cur){
+    const user = getUserByEmail(cur);
+    if(user) showDashboardFor(user);
+  }
+})();
+</script>
+</body>
+</html>
