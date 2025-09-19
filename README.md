@@ -1,2 +1,2 @@
 # Digital-Learning
-My digital learning code for  help student study
+My digital learning code for help students study
